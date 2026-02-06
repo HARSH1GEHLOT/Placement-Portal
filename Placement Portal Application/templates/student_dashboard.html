@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Student Dashboard
+        </title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Welcome {{  student.full_name  }}</h1>
+            <nav>
+                <a href="{{  url_for('index')  }}">Home</a>
+                <a href="/logout">logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+                <h2>Profile Detail</h2>
+                <p><strong>Name: </strong>{{  student.full_name  }}</p>
+                <p><strong>cGPA: </strong>{{  student.cgpa  }}</p>
+                <p><strong>Branch: </strong>{{  student.branch  }}</p>
+                <p><strong>Resume: </strong>{{  student.resume_url  }}</p>
+            </section>
+
+            <hr>
+            <section>
+                <h2>Available Jobs</h2>
+                <table border="1" cellpadding="10">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Min CGPA</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for drive in drives %}
+                        <tr>
+                            <td>{{  drive.job_title  }}</td>
+                            <td>{{  drive.company.company_name  }}</td>
+                            <td>{{  drive.min_cgpa  }}</td>
+                            <td>{{  drive.deadline.strftime('%d-%b-%Y')  }}</td>
+
+                            <td>
+                                {%  if drive.drive_id in applied_ids  %}
+                                    <span style="color: blue; font-weight: bold;">Applied</span>
+                                {%  elif student.cgpa >= drive.min_cgpa  %}
+                                    <form action="{{  url_for('apply_for_job', drive_id=drive.drive_id)  }}" method="POST">
+                                        <button type="submit" style="background-color: green; color: white; cursor: pointer;">
+                                            Apply
+                                        </button>
+                                    </form>
+                                    
+                                {%  else  %}
+                                    <button style="color: red" disabled>Not Eligible</button>
+                                {%  endif  %}
+                            </td>
+                        </tr>
+                        {%  endfor  %}
+                    </tbody>
+
+                </table>
+            </section>
+        </main>
+    </body>
+</html>

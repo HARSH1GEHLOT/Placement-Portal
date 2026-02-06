@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            register_student
+        </title>
+    </head>
+
+    <body>
+        <form action="/register/student" method="POST">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" required>
+            </div>
+            
+            <div>
+                <label for="full_name">Full Name</label>
+                <input type="text" name="full_name" required>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" required>
+            </div>
+            <div>
+                <label for="branch">Branch</label>
+                <input type="text" name="branch" required>
+            </div>
+            <div>
+                <label for="cgpa">Current CGPA</label>
+                <input type="number" name="cgpa" step="0.001" min="0" max="10" required>
+            </div>
+
+            <button type="submit" action="/dashboard/student">
+                Create Account
+            </button>
+            
+        </form>
+    </body>
+</html>

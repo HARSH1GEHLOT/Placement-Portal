@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Company Dashboard
+        </title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Welcome {{  company.company_name  }}</h1>
+            <nav>
+                <a href="{{  url_for('index')}}">Home</a>
+                <a href="/logout">logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+                <h2>Profile Detail</h2>
+                <p><strong>Website : </strong>{{  company.website}}</p>
+                <p><strong>HR Contact : </strong>{{  company.hr_contact}}</p>
+                <p><strong>Status : </strong>{{  company.approval_status  }}</p>
+            </section>
+
+            <hr>
+
+            <section>
+                <h2>Job Placement Drives</h2>
+
+                <a href="/post-drive">
+                    <button type="button">Post New Job</button>
+                </a>
+
+                <p>Below are jobs posted by you</p>
+                <ul>
+                    {%  for drive in drives  %}
+                        <li>
+                            <strong>{{  drive.job_title  }}</strong> - Status: {{  drive.drive_status  }}
+                            <br>
+                            <span>Applicants: {{  drive.applications|length  }}</span>
+                            <a href="{{  url_for('view_applications', drive_id=drive.drive_id)  }}">
+                                [View Applicants]
+                            </a>
+                        </li>
+
+                        
+                    {%  else  %}
+                        <li>No Job Posted Yet</li>
+
+                    {%  endfor  %}
+                </ul>
+            </section>
+        </main>
+    </body>
+</html>

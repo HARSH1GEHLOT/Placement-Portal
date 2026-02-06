@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Job Post Drive
+        </title>
+    </head>
+
+    <body>
+        <h2>Post a New Job</h2>
+
+        <form action="{{  url_for('post_drive')  }}" method="post">
+            <div>
+                <label for="job_title">Job Title: </label>
+                <input type="text" name="job_title" required placeholder="e.g. Data Analyst">
+            </div>
+
+            <div>
+                <label for="min_cgpa">Minimum CGPA Required: </label>
+                <input type="number" step="0.1" name="min_cgpa" required placeholder="e.g. 6.0 ">
+            </div>
+
+            <div>
+                <label for="deadline">Application Deadline: </label>
+                <input type="datetime-local" name="deadline" required>
+            </div>
+
+            <div>
+                <label for="description">Job Description: </label>
+                <br>
+                <textarea name="description" rows="5" cols="30"></textarea>
+            </div>
+
+            <button type="submit">Post Drive</button>
+
+        </form>
+        <br>
+        <a href="{{  url_for('company_dashboard')  }}">Back to Dashboard</a>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>register company</title>
+    </head>
+
+    <body>
+        <form action="/register/company" method="POST">
+            <div>
+                <label for="company_email">Email</label>
+                <input type="email" name="company_email" required>
+            </div>
+
+             <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" required>
+            </div>
+
+             <div>
+                <label for="company_name">Company Name</label>
+                <input type="text" name="company_name" required>
+            </div>
+
+             <div>
+                <label for="website">Company Website</label>
+                <input type="text" name="website" required>
+            </div>
+
+             <div>
+                <label for="hr_contact">HR Contact</label>
+                <input type="text" name="hr_contact" required>
+            </div>
+
+            <button type="submit">
+                Create Account
+            </button>
+        </form>
+    </body>
+</html>
