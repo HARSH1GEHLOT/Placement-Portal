@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Applicants for {{  drive.job_title  }}
+        </title>
+    </head>
+    <body>
+        <h1>
+            Applicants for {{  drive.job_title  }}
+        </h1>
+        <a href="{{  url_for('company_dashboard')  }}">Back to Dashboard</a>
+        <hr>
+        <table border="1" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Branch</th>
+                    <th>CGPA</th>
+                    <th>Status</th>
+                </tr>
+    
+            </thead>
+
+            <tbody>
+                {%  for app in applications  %}
+                <tr>
+                    <td>{{  app.student.full_name  }}</td>
+                    <td>{{  app.student.branch  }}</td>
+                    <td>{{  app.student.cgpa  }}</td>
+                    <td>{{  app.student.status  }}</td>
+                </tr>
+                {%  else  %}
+                <tr>
+                    <td colspan="4">No Applicants Yet.</td>
+                </tr>
+                {%  endfor  %}
+            </tbody>
+        </table>
+    </body>
+</html>
