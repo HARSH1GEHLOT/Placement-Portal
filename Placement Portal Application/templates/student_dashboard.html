@@ -12,6 +12,7 @@
             <nav>
                 <a href="{{  url_for('index')  }}">Home</a>
                 <a href="/logout">logout</a>
+                <a href="{{  url_for('student_edit_profile')  }}">Update Profile</a>
             </nav>
         </header>
 
@@ -25,6 +26,48 @@
             </section>
 
             <hr>
+
+            <section>
+                <h2>My application status</h2>
+                <table border="1" cellpadding="10" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <td>Job Title</td>
+                            <td>Company</td>
+                            <td>Applied Date</td>
+                            <td>Status</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in student.applications %}
+                        <tr>
+                            <td>{{  app.drive.job_title  }}</td>
+                            <td>{{  app.drive.company.company_name  }}</td>
+                            <td>{{  app.app_date.strftime('%d-%b-%Y')  }}</td>
+                            <td>
+                                {% if app.status=='Selected' %}
+                                    <span style="color: green; font-weight: bold;">Selected</span>
+                                {% elif app.status=='Rejected' %}                                        
+                                    <span style="color: red; font-weight: bold;">Rejected</span>
+                                {% elif app.status=='Shortlisted' %}
+                                    <span style="color: orange; font-weight: bold;">Shortlisted</span>
+                                {% else %}
+                                    <span style="color: blue; font-weight: bold;">{{  app.status  }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Not Applyed Yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+            </section>
+
+            <hr>
+
             <section>
                 <h2>Available Jobs</h2>
                 <table border="1" cellpadding="10">
@@ -38,6 +81,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
                         {% for drive in drives %}
                         <tr>
                             <td>{{  drive.job_title  }}</td>

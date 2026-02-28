@@ -16,6 +16,17 @@ class User(db.Model):
     company_profile = db.relationship('Company', backref="user", cascade="all, delete", uselist=False)
 
 
+class Admin(db.Model):
+    __tablename__="admin_profile"
+    admin_id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(50), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    
+
+
+
 class Company(db.Model):
     __tablename__ = "company_profile"
     company_id = db.Column(db.Integer, primary_key=True)
@@ -49,7 +60,7 @@ class Placement(db.Model):
     job_title = db.Column(db.String(50), nullable=False)
     min_cgpa = db.Column(db.Float, nullable=False)
     deadline = db.Column(db.DateTime, nullable=False)
-    drive_status = db.Column(db.String(50), default="Pending")
+    drive_status = db.Column(db.String(50), default="Approved")
     job_description = db.Column(db.Text, nullable=True)
 
     applications = db.relationship('Applications', backref='drive', lazy=True, cascade="all, delete-orphan") # Access all drive of this application by (drive.applications)

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Admin Panel
+        </title>
+    </head>
+    
+    <body>
+        <h1>Placement Cell Admin</h1>
+
+        <section>
+            <h2>Company Verifications</h2>
+            <table border="1">
+                <tr>
+                    <th>Company Name</th>
+                    <th>Website</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                {%  for company in companies  %}
+                <tr>
+                    <td>{{  company.company_name  }}</td>
+                    <td>{{  company.website  }}</td>
+                    <td>{{  company.approval_status  }}</td>
+                    <td>
+                        {% if company.approval_status == "Pending"  %}
+                            <a href="{{  url_for('approve_company', company_id=company.company_id) }}">Approve</a>
+                        {%  else  %}
+                            Verified
+                        {%  endif  %}
+                    </td>
+                </tr>
+                {%  endfor  %}
+            </table>
+        </section>
+
+        <section>
+            <h2>Student Overview</h2>
+            <ul>
+                {%  for student in students  %}
+                    <li>{{  student.full_name  }} - {{  student.branch  }} - CGPA : {{  student.cgpa  }}</li>
+                {%  endfor  %}
+            </ul>
+        </section>
+    </body>
+</html>

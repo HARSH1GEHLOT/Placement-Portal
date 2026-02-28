@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Update Profile
+        </title>
+    </head>
+    <body>
+        <h2>
+            Udate Your Profile
+        </h2>
+        <main>
+            <form method="POST">
+                <div>
+                    <label>fULL NAME: </label>
+                    <input type="text" name="full_name" value="{{  student.full_name  }}" required>
+                </div>
+
+                <div>
+                    <label>BRANCH: </label>
+                    <input type="text" name="branch" value="{{  student.branch  }}">
+                </div>
+
+                <div>
+                    <label>CGPA: </label>
+                    <input type="number" name="cgpa" step="0.01" value="{{  student.cgpa  }}" required>
+                </div>
+
+                <div>
+                    <label>RESUME URL: </label>
+                    <input type="url" name="resume_url">
+                </div>
+
+                <button type="submit">Update Profile</button>
+                
+            </form>
+            <a href="{{  url_for('student_dashboard')  }}">Cancel</a>
+        </main>
+    </body>
+</html>

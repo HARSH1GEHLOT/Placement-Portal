@@ -17,6 +17,7 @@
                     <th>Student Name</th>
                     <th>Branch</th>
                     <th>CGPA</th>
+                    <th>Resume</th>
                     <th>Status</th>
                 </tr>
     
@@ -28,7 +29,12 @@
                     <td>{{  app.student.full_name  }}</td>
                     <td>{{  app.student.branch  }}</td>
                     <td>{{  app.student.cgpa  }}</td>
-                    <td>{{  app.student.status  }}</td>
+                    <td><a href="{{  app.student.resume_url  }}">Download</a></td>
+                    <td>{{  app.status  }}
+                        <a href="{{  url_for('update_status', app_id=app.app_id, new_status='Shortlisted')  }}" class="btn" btn-primary>Shortlist</a>
+                        <a href="{{  url_for('update_status', app_id=app.app_id, new_status='Selected')  }}" class="btn" btn-success>Select</a>
+                        <a href="{{  url_for('update_status', app_id=app.app_id, new_status='Rejected')  }}" class="btn" btn-danger>Reject</a>
+                    </td>                    
                 </tr>
                 {%  else  %}
                 <tr>

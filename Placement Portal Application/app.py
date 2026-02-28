@@ -1,9 +1,11 @@
 from flask import Flask, request, redirect, render_template, flash, url_for, session
-from models import db, User, Company, Student, Placement, Applications
+from models import db, User, Company, Student, Placement, Applications, Admin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone
 
 app = Flask(__name__)
+
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///placement.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -11,9 +13,48 @@ app.secret_key = 'super_secret_key_for_session'
 #LINK THE DATA BASE
 db.init_app(app)
 
+def create_admin():
+    email = "admin@gmail.com"
+    password = "admin1234"
+    user_name = "Admin"
+
+    # 1. Check if the User exists in the central auth table
+    existing_user = User.query.filter_by(email=email).first()
+
+    if not existing_user:
+        try:
+            # 2. Create the central User entry
+            hashed_password = generate_password_hash(password)
+            new_user = User(
+                email=email, 
+                password=hashed_password, 
+                role='Admin'
+            )
+            db.session.add(new_user)
+            db.session.flush()  # Push to DB to generate new_user.id
+
+            # 3. Create the Admin Profile linked to that User
+            new_admin_profile = Admin(
+                user_name=user_name,
+                user_id=new_user.id,
+                email=email,
+                password=hashed_password
+            )
+            db.session.add(new_admin_profile)
+            db.session.commit()
+            print("Admin account and profile created successfully.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creating admin: {e}")
+    else:
+        print("Admin user already exists.")
+
+
 #create all data tables if they not exists
 with app.app_context():
     db.create_all()
+    create_admin()
+    
     print("done")
 
 @app.route('/', methods=["GET", "POST"])
@@ -96,6 +137,7 @@ def register_student():
         full_name = request.form.get('full_name')
         cgpa = float(request.form.get('cgpa'))
         branch = request.form.get('branch')
+        resume_url = request.form.get('resume_url')
 
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
@@ -113,7 +155,8 @@ def register_student():
                 user_id = new_user.id,
                 full_name = full_name,
                 cgpa = cgpa,
-                branch=branch
+                branch=branch,
+                resume_url=resume_url
 
             )
 
@@ -281,7 +324,7 @@ def apply_for_job(drive_id):
     return redirect(url_for('student_dashboard',))
 
 
-@app.route('/view-applications/<int:drive_id>')
+@app.route('/view-applications/<int:drive_id>')                        #VIEW APPLICTAIONS FOR COMPANY
 def view_applications(drive_id):
     if 'user_id' not in session or session.get('role') != 'Company':
         flash("Unauthorised Access.")
@@ -296,6 +339,78 @@ def view_applications(drive_id):
     
     return render_template("view_applications.html", drive=drive, applications=drive.applications)
 
+@app.route('/student_edit_profile', methods=["GET", "POST"])          #STUDENT PROFILE EDIT ROUTE
+def student_edit_profile():
+    if 'user_id' not in session or session.get('role') != "Student":
+        flash("Unauthorized Access.")
+        return redirect(url_for('login'))
+    user = User.query.get(session['user_id'])
+    student = user.student_profile
 
+    if request.method == "POST":
+        try:
+            student.full_name = request.form.get('full_name')
+            student.branch = request.form.get('branch')
+            student.cgpa = float(request.form.get('cgpa'))
+            student.resume_url = request.form.get('resume_url')
+
+            db.session.commit()
+            flash("Updated Successful.")
+            return redirect(url_for('student_dashboard'))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error Updateing Profile: {str(e)}")
+
+    return render_template("student_edit_profile.html", student=student)
+
+
+
+@app.route('/update-status/<int:app_id>/<string:new_status>')          #UPDATE STATUS ROUTE
+def update_status(app_id, new_status):
+    if 'user_id' not in session and session.get('role') != 'Company':
+        flash("unauthorized Access.")
+        return redirect(url_for('login'))
+    
+    application = Applications.query.get_or_404(app_id)
+    drive = Placement.query.get(application.drive_id)
+    user = User.query.get(session['user_id'])
+
+    if drive.company_id != user.company_profile.company_id:
+        flash("Permission denied.")
+        return redirect(url_for('company_dashboard'))
+    
+    application.status = new_status
+    db.session.commit()
+    flash(f"Application is marked as {new_status}")
+
+    return redirect(url_for('view_applications', drive_id=drive.drive_id))
+
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    students = Student.query.all()
+    companies = Company.query.all()
+    drives = Placement.query.all()
+
+    return render_template('admin_dashboard.html',
+                            students=students,
+                            companies=companies,
+                            drives=drives)
+
+
+@app.route('/admin/approve_company/<int:company_id>')
+def approve_company(company_id):
+    company = Company.query.get(company_id)
+    company.approval_status="Approved"
+    db.session.commit()
+
+    return redirect(url_for('admin_dashboard'))
+
+
+    
+    
 if __name__=="__main__":
+
+        
     app.run(debug=True)
